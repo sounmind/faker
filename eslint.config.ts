@@ -153,7 +153,6 @@ const config: ReturnType<typeof tseslint.config> = tseslint.config(
 
       // TODO @Shinigami92 2023-09-23: The following rules currently conflict with our code.
       // Each rule should be checked whether it should be enabled/configured and the problems fixed, or stay disabled permanently.
-      'unicorn/better-regex': 'off',
       'unicorn/consistent-function-scoping': 'off',
       'unicorn/no-object-as-default-parameter': 'off',
       'unicorn/prefer-export-from': 'off',
@@ -204,7 +203,12 @@ const config: ReturnType<typeof tseslint.config> = tseslint.config(
   {
     files: ['src/**/*.ts'],
     rules: {
+      'no-undef': 'error', // Must override the config from typescript-eslint
       'jsdoc/require-jsdoc': 'error',
+    },
+    languageOptions: {
+      // Don't allow any globals in our TypeScript files - unless explicitly ignored
+      globals: {},
     },
   },
   {

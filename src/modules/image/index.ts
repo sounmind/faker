@@ -1,3 +1,4 @@
+import { toBase64 } from '../../internal/base64';
 import { deprecated } from '../../internal/deprecated';
 import { ModuleBase } from '../../internal/module-base';
 import type { SexType } from '../person';
@@ -13,7 +14,7 @@ import type { SexType } from '../person';
  *
  * For a random user avatar image, use [`avatar()`](https://fakerjs.dev/api/image.html#avatar).
  *
- * This module previously also contained methods for specifically themed images like "fashion" or "food", but these are now deprecated. If you need more control over image type, you can request categorized images using [`urlLoremFlickr()`](https://fakerjs.dev/api/image.html#urlloremflickr), use an image provider directly or provide your own set of placeholder images.
+ * If you need more control over the content of the images, you can pass a `category` parameter e.g. `'cat'` or `'nature'` to [`urlLoremFlickr()`](https://fakerjs.dev/api/image.html#urlloremflickr) or simply use [`faker.helpers.arrayElement()`](https://fakerjs.dev/api/helpers.html#arrayelement) with your own array of image URLs.
  */
 export class ImageModule extends ModuleBase {
   /**
@@ -93,7 +94,7 @@ export class ImageModule extends ModuleBase {
     deprecated({
       deprecated: 'faker.image.avatarLegacy()',
       proposed: 'faker.image.avatar()',
-      since: '9.0.1',
+      since: '9.0.2',
       until: '10.0.0',
     });
 
@@ -422,8 +423,6 @@ export class ImageModule extends ModuleBase {
 
     return type === 'svg-uri'
       ? `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svgString)}`
-      : `data:image/svg+xml;base64,${Buffer.from(svgString).toString(
-          'base64'
-        )}`;
+      : `data:image/svg+xml;base64,${toBase64(svgString)}`;
   }
 }

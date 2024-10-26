@@ -1,3 +1,6 @@
+import { FakerError } from '../../errors/faker-error';
+import { toBase64Url } from '../../internal/base64';
+import { deprecated } from '../../internal/deprecated';
 import { ModuleBase } from '../../internal/module-base';
 import { charMapping } from './char-mappings';
 import * as random_ua from './user-agent';
@@ -23,12 +26,88 @@ export type HTTPStatusCodeType =
 
 export type HTTPProtocolType = 'http' | 'https';
 
+export enum IPv4Network {
+  /**
+   * Equivalent to: `0.0.0.0/0`
+   */
+  Any = 'any',
+  /**
+   * Equivalent to: `127.0.0.0/8`
+   *
+   * @see [RFC1122](https://www.rfc-editor.org/rfc/rfc1122)
+   */
+  Loopback = 'loopback',
+  /**
+   * Equivalent to: `10.0.0.0/8`
+   *
+   * @see [RFC1918](https://www.rfc-editor.org/rfc/rfc1918)
+   */
+  PrivateA = 'private-a',
+  /**
+   * Equivalent to: `172.16.0.0/12`
+   *
+   * @see [RFC1918](https://www.rfc-editor.org/rfc/rfc1918)
+   */
+  PrivateB = 'private-b',
+  /**
+   * Equivalent to: `192.168.0.0/16`
+   *
+   * @see [RFC1918](https://www.rfc-editor.org/rfc/rfc1918)
+   */
+  PrivateC = 'private-c',
+  /**
+   * Equivalent to: `192.0.2.0/24`
+   *
+   * @see [RFC5737](https://www.rfc-editor.org/rfc/rfc5737)
+   */
+  TestNet1 = 'test-net-1',
+  /**
+   * Equivalent to: `198.51.100.0/24`
+   *
+   * @see [RFC5737](https://www.rfc-editor.org/rfc/rfc5737)
+   */
+  TestNet2 = 'test-net-2',
+  /**
+   * Equivalent to: `203.0.113.0/24`
+   *
+   * @see [RFC5737](https://www.rfc-editor.org/rfc/rfc5737)
+   */
+  TestNet3 = 'test-net-3',
+  /**
+   * Equivalent to: `169.254.0.0/16`
+   *
+   * @see [RFC3927](https://www.rfc-editor.org/rfc/rfc3927)
+   */
+  LinkLocal = 'link-local',
+  /**
+   * Equivalent to: `224.0.0.0/4`
+   *
+   * @see [RFC5771](https://www.rfc-editor.org/rfc/rfc5771)
+   */
+  Multicast = 'multicast',
+}
+
+export type IPv4NetworkType = `${IPv4Network}`;
+
+const ipv4Networks: Record<IPv4Network, string> = {
+  [IPv4Network.Any]: '0.0.0.0/0',
+  [IPv4Network.Loopback]: '127.0.0.0/8',
+  [IPv4Network.PrivateA]: '10.0.0.0/8',
+  [IPv4Network.PrivateB]: '172.16.0.0/12',
+  [IPv4Network.PrivateC]: '192.168.0.0/16',
+  [IPv4Network.TestNet1]: '192.0.2.0/24',
+  [IPv4Network.TestNet2]: '198.51.100.0/24',
+  [IPv4Network.TestNet3]: '203.0.113.0/24',
+  [IPv4Network.LinkLocal]: '169.254.0.0/16',
+  [IPv4Network.Multicast]: '224.0.0.0/4',
+};
+
 /**
  * Module to generate internet related entries.
  *
  * ### Overview
  *
- * For user accounts, you may need an [`email()`](https://fakerjs.dev/api/internet.html#email) and a [`password()`](https://fakerjs.dev/api/internet.html#password), as well as a ASCII [`userName()`](https://fakerjs.dev/api/internet.html#username) or Unicode [`displayName()`](https://fakerjs.dev/api/internet.html#displayname). Since the emails generated could coincidentally be real email addresses, you should not use these for sending real email addresses. If this is a concern, use [`exampleEmail()`](https://fakerjs.dev/api/internet.html#exampleemail) instead.
+ * For user accounts, you may need an [`email()`](https://fakerjs.dev/api/internet.html#email) and a [`password()`](https://fakerjs.dev/api/internet.html#password), as well as a ASCII [`username()`](https://fakerjs.dev/api/internet.html#username) or Unicode [`displayName()`](https://fakerjs.dev/api/internet.html#displayname). Since the emails generated could coincidentally be real email addresses, you should not use these for sending real email addresses. If this is a concern, use [`exampleEmail()`](https://fakerjs.dev/api/internet.html#exampleemail) instead.
  *
  * For websites, you can generate a [`domainName()`](https://fakerjs.dev/api/internet.html#domainname) or a full [`url()`](https://fakerjs.dev/api/internet.html#url).
  *
@@ -92,7 +171,7 @@ export class InternetModule extends ModuleBase {
       allowSpecialCharacters = false,
     } = options;
 
-    let localPart: string = this.userName({ firstName, lastName });
+    let localPart: string = this.username({ firstName, lastName });
     // Strip any special characters from the local part of the email address
     // This could happen if invalid chars are passed in manually in the firstName/lastName
     localPart = localPart.replaceAll(/[^A-Za-z0-9._+-]+/g, '');
@@ -196,8 +275,60 @@ export class InternetModule extends ModuleBase {
    * faker.internet.userName({ firstName: '大羽', lastName: '陳' }) // 'hlzp8d.tpv45' - note neither name is used
    *
    * @since 2.0.1
+   *
+   * @deprecated Use `faker.internet.username()` instead.
    */
   userName(
+    options: {
+      /**
+       * The optional first name to use.
+       *
+       * @default faker.person.firstName()
+       */
+      firstName?: string;
+      /**
+       * The optional last name to use.
+       *
+       * @default faker.person.lastName()
+       */
+      lastName?: string;
+    } = {}
+  ): string {
+    deprecated({
+      deprecated: 'faker.internet.userName()',
+      proposed: 'faker.internet.username()',
+      since: '9.1.0',
+      until: '10.0.0',
+    });
+
+    return this.username(options);
+  }
+
+  /**
+   * Generates a username using the given person's name as base.
+   * The resulting username may use neither, one or both of the names provided.
+   * This will always return a plain ASCII string.
+   * Some basic stripping of accents and transliteration of characters will be done.
+   *
+   * @param options An options object.
+   * @param options.firstName The optional first name to use. If not specified, a random one will be chosen.
+   * @param options.lastName The optional last name to use. If not specified, a random one will be chosen.
+   *
+   * @see faker.internet.displayName(): For generating an Unicode display name.
+   *
+   * @example
+   * faker.internet.username() // 'Nettie_Zboncak40'
+   * faker.internet.username({ firstName: 'Jeanne' }) // 'Jeanne98'
+   * faker.internet.username({ firstName: 'Jeanne' }) // 'Jeanne.Smith98'
+   * faker.internet.username({ firstName: 'Jeanne', lastName: 'Doe'}) // 'Jeanne_Doe98'
+   * faker.internet.username({ firstName: 'John', lastName: 'Doe' }) // 'John.Doe'
+   * faker.internet.username({ firstName: 'Hélene', lastName: 'Müller' }) // 'Helene_Muller11'
+   * faker.internet.username({ firstName: 'Фёдор', lastName: 'Достоевский' }) // 'Fedor.Dostoevskii50'
+   * faker.internet.username({ firstName: '大羽', lastName: '陳' }) // 'hlzp8d.tpv45' - note neither name is used
+   *
+   * @since 9.1.0
+   */
+  username(
     options: {
       /**
        * The optional first name to use.
@@ -271,7 +402,7 @@ export class InternetModule extends ModuleBase {
    * @param options.firstName The optional first name to use. If not specified, a random one will be chosen.
    * @param options.lastName The optional last name to use. If not specified, a random one will be chosen.
    *
-   * @see faker.internet.userName(): For generating a plain ASCII username.
+   * @see faker.internet.username(): For generating a plain ASCII username.
    *
    * @example
    * faker.internet.displayName() // 'Nettie_Zboncak40'
@@ -485,15 +616,100 @@ export class InternetModule extends ModuleBase {
   /**
    * Generates a random IPv4 address.
    *
+   * @param options The optional options object.
+   * @param options.cidrBlock The optional CIDR block to use. Must be in the format `x.x.x.x/y`. Defaults to `'0.0.0.0/0'`.
+   *
    * @example
    * faker.internet.ipv4() // '245.108.222.0'
+   * faker.internet.ipv4({ cidrBlock: '192.168.0.0/16' }) // '192.168.215.224'
    *
    * @since 6.1.1
    */
-  ipv4(): string {
-    return Array.from({ length: 4 }, () => this.faker.number.int(255)).join(
-      '.'
-    );
+  ipv4(options?: {
+    /**
+     * The optional CIDR block to use. Must be in the format `x.x.x.x/y`.
+     *
+     * @default '0.0.0.0/0'
+     */
+    cidrBlock?: string;
+  }): string;
+  /**
+   * Generates a random IPv4 address.
+   *
+   * @param options The optional options object.
+   * @param options.network The optional network to use. This is intended as an alias for well-known `cidrBlock`s. Defaults to `'any'`.
+   *
+   * @example
+   * faker.internet.ipv4() // '245.108.222.0'
+   * faker.internet.ipv4({ network: 'private-a' }) // '10.199.154.205'
+   *
+   * @since 6.1.1
+   */
+  ipv4(options?: {
+    /**
+     * The optional network to use. This is intended as an alias for well-known `cidrBlock`s.
+     *
+     * @default 'any'
+     */
+    network?: IPv4NetworkType;
+  }): string;
+  /**
+   * Generates a random IPv4 address.
+   *
+   * @param options The optional options object.
+   * @param options.cidrBlock The optional CIDR block to use. Must be in the format `x.x.x.x/y`. Defaults to `'0.0.0.0/0'`.
+   * @param options.network The optional network to use. This is intended as an alias for well-known `cidrBlock`s. Defaults to `'any'`.
+   *
+   * @example
+   * faker.internet.ipv4() // '245.108.222.0'
+   * faker.internet.ipv4({ cidrBlock: '192.168.0.0/16' }) // '192.168.215.224'
+   * faker.internet.ipv4({ network: 'private-a' }) // '10.199.154.205'
+   *
+   * @since 6.1.1
+   */
+  ipv4(
+    options?:
+      | {
+          /**
+           * The optional CIDR block to use. Must be in the format `x.x.x.x/y`.
+           *
+           * @default '0.0.0.0/0'
+           */
+          cidrBlock?: string;
+        }
+      | {
+          /**
+           * The optional network to use. This is intended as an alias for well-known `cidrBlock`s.
+           *
+           * @default 'any'
+           */
+          network?: IPv4NetworkType;
+        }
+  ): string;
+  ipv4(
+    options: { cidrBlock?: string; network?: IPv4NetworkType } = {}
+  ): string {
+    const { network = 'any', cidrBlock = ipv4Networks[network] } = options;
+
+    if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/.test(cidrBlock)) {
+      throw new FakerError(
+        `Invalid CIDR block provided: ${cidrBlock}. Must be in the format x.x.x.x/y.`
+      );
+    }
+
+    const [ipText, subnet] = cidrBlock.split('/');
+    const subnetMask = 0xffffffff >>> Number.parseInt(subnet);
+    const [rawIp1, rawIp2, rawIp3, rawIp4] = ipText.split('.').map(Number);
+    const rawIp = (rawIp1 << 24) | (rawIp2 << 16) | (rawIp3 << 8) | rawIp4;
+    const networkIp = rawIp & ~subnetMask;
+    const hostOffset = this.faker.number.int(subnetMask);
+    const ip = networkIp | hostOffset;
+    return [
+      (ip >>> 24) & 0xff,
+      (ip >>> 16) & 0xff,
+      (ip >>> 8) & 0xff,
+      ip & 0xff,
+    ].join('.');
   }
 
   /**
@@ -803,5 +1019,107 @@ export class InternetModule extends ModuleBase {
     return this.faker.helpers.arrayElement(
       this.faker.definitions.internet.emoji[emojiType]
     );
+  }
+
+  /**
+   * Generates a random JWT (JSON Web Token) Algorithm.
+   *
+   * @see faker.internet.jwt(): For generating random JWT (JSON Web Token).
+   *
+   * @example
+   * faker.internet.jwtAlgorithm() // 'HS256'
+   * faker.internet.jwtAlgorithm() // 'RS512'
+   *
+   * @since 9.1.0
+   */
+  jwtAlgorithm(): string {
+    return this.faker.helpers.arrayElement(
+      this.faker.definitions.internet.jwt_algorithm
+    );
+  }
+
+  /**
+   * Generates a random JWT (JSON Web Token).
+   *
+   * Please note that this method generates a random signature instead of a valid one.
+   *
+   * @param options The optional options object.
+   * @param options.header The Header to use for the token. Defaults to a random object with the following fields: `alg` and `typ`.
+   * @param options.payload The Payload to use for the token. Defaults to a random object with the following fields: `iat`, `exp`, `nbf`, `iss`, `sub`, `aud`, and `jti`.
+   * @param options.refDate The date to use as reference point for the newly generated date.
+   *
+   * @see https://datatracker.ietf.org/doc/html/rfc7519
+   * @see faker.internet.jwtAlgorithm(): For generating random JWT (JSON Web Token) Algorithm.
+   *
+   * @example
+   * faker.internet.jwt()
+   * faker.internet.jwt({ header: { alg: 'HS256' }}) // 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MTg2MTM3MTIsImV4cCI6MTcxODYzMzY3OSwibmJmIjoxNjk3MjYzNjMwLCJpc3MiOiJEb3lsZSBhbmQgU29ucyIsInN1YiI6IjYxYWRkYWFmLWY4MjktNDkzZS1iNTI1LTJjMGJkNjkzOTdjNyIsImF1ZCI6IjczNjcyMjVjLWIwMWMtNGE1My1hYzQyLTYwOWJkZmI1MzBiOCIsImp0aSI6IjU2Y2ZkZjAxLWRhMzMtNGUxNi04MzJiLTFlYTk3ZGY1MTQ2YSJ9.5iUgaCaFVPZ8d1QD0xMjoeJbmPVyUfKfoRQ6Njzm5MLp5F4UMh5REbPCrW70fAkr'
+   * faker.internet.jwt({ payload: { iss: 'Acme' }}) // 'eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBY21lIn0.syUt0GBukNac8Cn1AGKFq2SWAXWy1YIfl0uOYiwg6TZ3omAW0c7FGWY6bC7ZOFSt'
+   * faker.internet.jwt({ refDate: '2020-01-01T00:00:00.000Z' }) // 'eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1Nzc4MDY4NDUsImV4cCI6MTU3Nzg0NjI4MCwibmJmIjoxNTgxNTQyMDYwLCJpc3MiOiJLcmVpZ2VyLCBBbHRlbndlcnRoIGFuZCBQYXVjZWsiLCJzdWIiOiI5NzVjMjMyOS02MDlhLTRjYTYtYjBkZi05ZmY4MGZiNDUwN2QiLCJhdWQiOiI0ODQxZWYwNi01OWYwLTQzMWEtYmFmZi0xMjkxZmRhZDdhNjgiLCJqdGkiOiJmNDBjZTJiYi00ZWYyLTQ1MjMtOGIxMy1kN2Q4NTA5N2M2ZTUifQ.cuClEZQ0CyPIMVS5uxrMwWXz0wcqFFdt0oNne3PMryyly0jghkxVurss2TapMC3C'
+   *
+   * @since 9.1.0
+   */
+  jwt(
+    options: {
+      /**
+       * The header to use for the token. If present, it will replace any default values.
+       *
+       * @default
+       * {
+       *   alg: faker.internet.jwtAlgorithm(),
+       *   typ: 'JWT'
+       * }
+       */
+      header?: Record<string, unknown>;
+      /**
+       * The payload to use for the token. If present, it will replace any default values.
+       *
+       * @default
+       * {
+       *   iat: faker.date.recent(),
+       *   exp: faker.date.soon(),
+       *   nbf: faker.date.anytime(),
+       *   iss: faker.company.name(),
+       *   sub: faker.string.uuid(),
+       *   aud: faker.string.uuid(),
+       *   jti: faker.string.uuid()
+       * }
+       */
+      payload?: Record<string, unknown>;
+      /**
+       * The date to use as reference point for the newly generated date.
+       *
+       * @default faker.defaultRefDate()
+       */
+      refDate?: string | Date | number;
+    } = {}
+  ): string {
+    const { refDate = this.faker.defaultRefDate() } = options;
+
+    const iatDefault = this.faker.date.recent({ refDate });
+
+    const {
+      header = {
+        alg: this.jwtAlgorithm(),
+        typ: 'JWT',
+      },
+      payload = {
+        iat: Math.round(iatDefault.valueOf() / 1000),
+        exp: Math.round(
+          this.faker.date.soon({ refDate: iatDefault }).valueOf() / 1000
+        ),
+        nbf: Math.round(this.faker.date.anytime({ refDate }).valueOf() / 1000),
+        iss: this.faker.company.name(),
+        sub: this.faker.string.uuid(),
+        aud: this.faker.string.uuid(),
+        jti: this.faker.string.uuid(),
+      },
+    } = options;
+
+    const encodedHeader = toBase64Url(JSON.stringify(header));
+    const encodedPayload = toBase64Url(JSON.stringify(payload));
+    const signature = this.faker.string.alphanumeric(64);
+
+    return `${encodedHeader}.${encodedPayload}.${signature}`;
   }
 }

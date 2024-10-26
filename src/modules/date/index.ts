@@ -1,26 +1,9 @@
 import type { Faker } from '../..';
 import type { DateEntryDefinition } from '../../definitions';
 import { FakerError } from '../../errors/faker-error';
+import { toDate } from '../../internal/date';
+import { assertLocaleData } from '../../internal/locale-proxy';
 import { SimpleModuleBase } from '../../internal/module-base';
-import { assertLocaleData } from '../../locale-proxy';
-
-/**
- * Converts a date passed as a `string`, `number` or `Date` to a valid `Date` object.
- *
- * @param date The date to convert.
- * @param name The reference name used for error messages. Defaults to `'refDate'`.
- *
- * @throws If the given date is invalid.
- */
-function toDate(date: string | Date | number, name: string = 'refDate'): Date {
-  const converted = new Date(date);
-
-  if (Number.isNaN(converted.valueOf())) {
-    throw new FakerError(`Invalid ${name} date: ${date.toString()}`);
-  }
-
-  return converted;
-}
 
 /**
  * Module to generate dates (without methods requiring localized data).
@@ -566,6 +549,11 @@ export class SimpleDateModule extends SimpleModuleBase {
  * For a realistic birthdate for an adult, use [`birthdate()`](https://fakerjs.dev/api/date.html#birthdate).
  *
  * For more control, any of these methods can be customized with further options, or use [`between()`](https://fakerjs.dev/api/date.html#between) to generate a single date between two dates, or [`betweens()`](https://fakerjs.dev/api/date.html#betweens) for multiple dates.
+ *
+ * If you need to generate a date range (start-end), you can do so using either of these two methods:
+ *
+ * - `const start = faker.date.soon(); const end = faker.date.soon({ refDate: start });`
+ * - `const [start, end] = faker.date.betweens({ from, to, count: 2 });` // does not work with tsconfig's `noUncheckedIndexedAccess: true`
  *
  * Dates can be specified as Javascript Date objects, strings or UNIX timestamps.
  * For example to generate a date between 1st January 2000 and now, use:

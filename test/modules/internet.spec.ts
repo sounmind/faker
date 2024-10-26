@@ -1,10 +1,14 @@
 import validator from 'validator';
 import { describe, expect, it } from 'vitest';
 import { allFakers, faker } from '../../src';
+import { FakerError } from '../../src/errors/faker-error';
+import { IPv4Network } from '../../src/modules/internet';
 import { seededTests } from '../support/seeded-runs';
 import { times } from './../support/times';
 
 const NON_SEEDED_BASED_RUN = 5;
+
+const refDate = '2020-01-01T00:00:00.000Z';
 
 describe('internet', () => {
   seededTests(faker, 'internet', (t) => {
@@ -15,8 +19,8 @@ describe('internet', () => {
       'domainSuffix',
       'domainWord',
       'ip',
-      'ipv4',
       'ipv6',
+      'jwtAlgorithm',
       'port',
       'userAgent'
     );
@@ -52,6 +56,20 @@ describe('internet', () => {
     });
 
     t.describe('userName', (t) => {
+      t.it('noArgs')
+        .it('with firstName option', { firstName: 'Jane' })
+        .it('with lastName option', { lastName: 'Doe' })
+        .it('with all option', { firstName: 'Jane', lastName: 'Doe' })
+        .it('with Latin names', { firstName: 'Jane', lastName: 'Doe' })
+        .it('with accented names', { firstName: 'Hélene', lastName: 'Müller' })
+        .it('with Cyrillic names', {
+          firstName: 'Фёдор',
+          lastName: 'Достоевский',
+        })
+        .it('with Chinese names', { firstName: '大羽', lastName: '陳' });
+    });
+
+    t.describe('username', (t) => {
       t.it('noArgs')
         .it('with firstName option', { firstName: 'Jane' })
         .it('with lastName option', { lastName: 'Doe' })
@@ -132,6 +150,18 @@ describe('internet', () => {
           appendSlash: false,
           protocol: 'http',
         });
+    });
+
+    t.describe('ipv4', (t) => {
+      t.it('noArgs')
+        .it('with cidrBlock', { cidrBlock: '192.168.13.37/24' })
+        .it('with network', { network: IPv4Network.Multicast });
+    });
+
+    t.describe('jwt', (t) => {
+      t.it('noArgs', { refDate })
+        .it('with custom header', { header: { alg: 'ES256' }, refDate })
+        .it('with custom payload', { payload: { iss: 'Acme' }, refDate });
     });
   });
 
@@ -340,8 +370,80 @@ describe('internet', () => {
       });
 
       describe('userName()', () => {
+        it('should return a random userName', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName();
+
+          expect(userName).toBeTruthy();
+          expect(userName).toBeTypeOf('string');
+          expect(userName).toMatch(/\w/);
+        });
+
+        it('should return a random userName with given firstName', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({ firstName: 'Aiden' });
+
+          expect(userName).toBeTruthy();
+          expect(userName).toBeTypeOf('string');
+          expect(userName).toMatch(/\w/);
+          expect(userName).includes('Aiden');
+        });
+
+        it('should return a random userName with given firstName and lastName', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({
+            firstName: 'Aiden',
+            lastName: 'Harann',
+          });
+
+          expect(userName).toBeTruthy();
+          expect(userName).toBeTypeOf('string');
+          expect(userName).includes('Aiden');
+          expect(userName).includes('Harann');
+          expect(userName).toMatch(/^Aiden[._]Harann\d*/);
+        });
+
+        it('should strip accents', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({
+            firstName: 'Adèle',
+            lastName: 'Smith',
+          });
+          expect(userName).includes('Adele');
+          expect(userName).includes('Smith');
+        });
+
+        it('should transliterate Cyrillic', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({
+            firstName: 'Амос',
+            lastName: 'Васильев',
+          });
+          expect(userName).includes('Amos');
+        });
+
+        it('should provide a fallback for Chinese etc', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({
+            firstName: '大羽',
+            lastName: '陳',
+          });
+          expect(userName).includes('hlzp8d');
+        });
+
+        it('should provide a fallback special unicode characters', () => {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
+          const userName = faker.internet.userName({
+            firstName: '🐼',
+            lastName: '❤️',
+          });
+          expect(userName).includes('2qt8');
+        });
+      });
+
+      describe('username()', () => {
         it('should return a random username', () => {
-          const username = faker.internet.userName();
+          const username = faker.internet.username();
 
           expect(username).toBeTruthy();
           expect(username).toBeTypeOf('string');
@@ -349,7 +451,7 @@ describe('internet', () => {
         });
 
         it('should return a random username with given firstName', () => {
-          const username = faker.internet.userName({ firstName: 'Aiden' });
+          const username = faker.internet.username({ firstName: 'Aiden' });
 
           expect(username).toBeTruthy();
           expect(username).toBeTypeOf('string');
@@ -358,7 +460,7 @@ describe('internet', () => {
         });
 
         it('should return a random username with given firstName and lastName', () => {
-          const username = faker.internet.userName({
+          const username = faker.internet.username({
             firstName: 'Aiden',
             lastName: 'Harann',
           });
@@ -371,7 +473,7 @@ describe('internet', () => {
         });
 
         it('should strip accents', () => {
-          const username = faker.internet.userName({
+          const username = faker.internet.username({
             firstName: 'Adèle',
             lastName: 'Smith',
           });
@@ -380,7 +482,7 @@ describe('internet', () => {
         });
 
         it('should transliterate Cyrillic', () => {
-          const username = faker.internet.userName({
+          const username = faker.internet.username({
             firstName: 'Амос',
             lastName: 'Васильев',
           });
@@ -388,7 +490,7 @@ describe('internet', () => {
         });
 
         it('should provide a fallback for Chinese etc', () => {
-          const username = faker.internet.userName({
+          const username = faker.internet.username({
             firstName: '大羽',
             lastName: '陳',
           });
@@ -396,7 +498,7 @@ describe('internet', () => {
         });
 
         it('should provide a fallback special unicode characters', () => {
-          const username = faker.internet.userName({
+          const username = faker.internet.username({
             firstName: '🐼',
             lastName: '❤️',
           });
@@ -595,6 +697,95 @@ describe('internet', () => {
             expect(+part).toBeLessThanOrEqual(255);
           }
         });
+
+        it('should return a random IPv4 for a given CIDR block', () => {
+          const actual = faker.internet.ipv4({
+            cidrBlock: '192.168.42.255/24',
+          });
+
+          expect(actual).toBeTruthy();
+          expect(actual).toBeTypeOf('string');
+          expect(actual).toSatisfy((value: string) => validator.isIP(value, 4));
+          expect(actual).toMatch(/^192\.168\.42\.\d{1,3}$/);
+        });
+
+        it('should return a random IPv4 for a given CIDR block non-8ish network mask', () => {
+          const actual = faker.internet.ipv4({
+            cidrBlock: '192.168.0.255/20',
+          });
+
+          expect(actual).toBeTruthy();
+          expect(actual).toBeTypeOf('string');
+          expect(actual).toSatisfy((value: string) => validator.isIP(value, 4));
+
+          const [first, second, third, fourth] = actual.split('.').map(Number);
+          expect(first).toBe(192);
+          expect(second).toBe(168);
+          expect(third).toBeGreaterThanOrEqual(0);
+          expect(third).toBeLessThanOrEqual(15);
+          expect(fourth).toBeGreaterThanOrEqual(0);
+          expect(fourth).toBeLessThanOrEqual(255);
+        });
+
+        it.each([
+          '',
+          '...',
+          '.../',
+          '.0.0.0/0',
+          '0..0.0/0',
+          '0.0..0/0',
+          '0.0.0./0',
+          '0.0.0.0/',
+          'a.0.0.0/0',
+          '0.b.0.0/0',
+          '0.0.c.0/0',
+          '0.0.0.d/0',
+          '0.0.0.0/e',
+        ])(
+          'should throw an error if not following the x.x.x.x/y format',
+          (cidrBlock) => {
+            expect(() =>
+              faker.internet.ipv4({
+                cidrBlock,
+              })
+            ).toThrow(
+              new FakerError(
+                `Invalid CIDR block provided: ${cidrBlock}. Must be in the format x.x.x.x/y.`
+              )
+            );
+          }
+        );
+
+        it.each([
+          [IPv4Network.Any, /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/],
+          [IPv4Network.Loopback, /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/],
+          [IPv4Network.PrivateA, /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/],
+          [
+            IPv4Network.PrivateB,
+            /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/,
+          ],
+          [IPv4Network.PrivateC, /^192\.168\.\d{1,3}\.\d{1,3}$/],
+          [IPv4Network.TestNet1, /^192\.0\.2\.\d{1,3}$/],
+          [IPv4Network.TestNet2, /^198\.51\.100\.\d{1,3}$/],
+          [IPv4Network.TestNet3, /^203\.0\.113\.\d{1,3}$/],
+          [IPv4Network.LinkLocal, /^169\.254\.\d{1,3}\.\d{1,3}$/],
+          [
+            IPv4Network.Multicast,
+            /^2(2[4-9]|3[0-9])\.\d{1,3}\.\d{1,3}\.\d{1,3}$/,
+          ],
+        ] as const)(
+          'should return a random IPv4 for %s network',
+          (network, regex) => {
+            const actual = faker.internet.ipv4({ network });
+
+            expect(actual).toBeTruthy();
+            expect(actual).toBeTypeOf('string');
+            expect(actual).toSatisfy((value: string) =>
+              validator.isIP(value, 4)
+            );
+            expect(actual).toMatch(regex);
+          }
+        );
       });
 
       describe('ipv6()', () => {
@@ -787,6 +978,40 @@ describe('internet', () => {
           expect(emoji).toBeTruthy();
           expect(emoji).toBeTypeOf('string');
           expect(emoji.length).toBeGreaterThanOrEqual(1);
+        });
+      });
+
+      describe('jwt', () => {
+        it('should return a random jwt', () => {
+          const jwt = faker.internet.jwt();
+
+          expect(jwt).toBeTruthy();
+          expect(jwt).toBeTypeOf('string');
+          expect(jwt).toSatisfy(validator.isJWT);
+        });
+
+        it('should return the header and payload values from the token', () => {
+          const header = {
+            kid: faker.string.alphanumeric(),
+          };
+
+          const payload = {
+            nonce: faker.string.alphanumeric(),
+          };
+
+          const actual = faker.internet.jwt({ header, payload });
+
+          expect(actual).toBeTypeOf('string');
+          expect(actual).toSatisfy(validator.isJWT);
+
+          const parts = actual.split('.');
+
+          expect(
+            JSON.parse(Buffer.from(parts[0], 'base64url').toString('ascii'))
+          ).toMatchObject(header);
+          expect(
+            JSON.parse(Buffer.from(parts[1], 'base64url').toString('ascii'))
+          ).toMatchObject(payload);
         });
       });
     }
