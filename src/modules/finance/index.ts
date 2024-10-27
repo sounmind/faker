@@ -963,7 +963,7 @@ export class FinanceModule extends ModuleBase {
     deprecated({
       deprecated: 'faker.finance.transactionDescription()',
       proposed: 'an alternative from PR #3202',
-      since: '9.1.0',
+      since: '9.2.0',
       until: '10.0.0',
     });
 
