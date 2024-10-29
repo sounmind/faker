@@ -173,7 +173,7 @@ export class LocationModule extends ModuleBase {
           'faker.location.zipCode(format) and faker.location.zipCode({ format })',
         proposed:
           'faker.location.zipCode(), faker.location.zipCode({ state }), or faker.helpers.replaceSymbols(format)',
-        since: '9.1.0',
+        since: '9.2.0',
         until: '10.0.0',
       });
       return this.faker.helpers.replaceSymbols(format);
