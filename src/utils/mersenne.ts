@@ -19,18 +19,12 @@ import type { Randomizer } from '../randomizer';
 export function generateMersenne32Randomizer(): Randomizer {
   const twister = new MersenneTwister19937();
 
-  twister.initGenrand(Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER));
-
   return {
     next(): number {
-      return twister.genrandReal2();
+      return twister.next32f();
     },
     seed(seed: number | number[]): void {
-      if (typeof seed === 'number') {
-        twister.initGenrand(seed);
-      } else if (Array.isArray(seed)) {
-        twister.initByArray(seed, seed.length);
-      }
+      twister.seed(seed);
     },
   };
 }
@@ -53,18 +47,12 @@ export function generateMersenne32Randomizer(): Randomizer {
 export function generateMersenne53Randomizer(): Randomizer {
   const twister = new MersenneTwister19937();
 
-  twister.initGenrand(Math.ceil(Math.random() * Number.MAX_SAFE_INTEGER));
-
   return {
     next(): number {
-      return twister.genrandRes53();
+      return twister.next53f();
     },
     seed(seed: number | number[]): void {
-      if (typeof seed === 'number') {
-        twister.initGenrand(seed);
-      } else if (Array.isArray(seed)) {
-        twister.initByArray(seed, seed.length);
-      }
+      twister.seed(seed);
     },
   };
 }
