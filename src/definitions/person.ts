@@ -1,12 +1,27 @@
 import type { LocaleEntry } from './definitions';
 
+/**
+ * Entries that are dependent on a person's sex.
+ */
 export type PersonEntryDefinition<T> =
   | {
+      /**
+       * Values that cannot clearly be attributed to a specific sex or are used for both sexes.
+       */
       generic?: T[];
+      /**
+       * Values that are primarily attributable to only females.
+       */
       male: T[];
+      /**
+       * Values that are primarily attributable to only males.
+       */
       female: T[];
     }
   | {
+      /**
+       * Values that cannot clearly be attributed to a specific sex or are used both sexes.
+       */
       generic: T[];
       male?: never;
       female?: never;

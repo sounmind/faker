@@ -2,11 +2,27 @@ import type { Faker } from '../..';
 import type { PersonEntryDefinition } from '../../definitions/person';
 import { ModuleBase } from '../../internal/module-base';
 
+/**
+ * The enum for values corresponding to a person's sex.
+ */
 export enum Sex {
+  /**
+   * Is used for values that are primarily attributable to only females.
+   */
   Female = 'female',
+  /**
+   * Is used for values that are primarily attributable to only males.
+   */
   Male = 'male',
+  /**
+   * Is used for values that cannot clearly be attributed to a specific sex or are used for both sexes.
+   */
+  Generic = 'generic',
 }
 
+/**
+ * The parameter type for values corresponding to a person's sex.
+ */
 export type SexType = `${Sex}`;
 
 /**
@@ -20,30 +36,48 @@ export type SexType = `${Sex}`;
  */
 function selectDefinition<T>(
   faker: Faker,
-  sex: SexType | undefined,
+  sex: SexType = faker.helpers.enumValue(Sex),
   personEntry: PersonEntryDefinition<T>
 ): T[] {
   const { generic, female, male } = personEntry;
-  switch (sex) {
-    case Sex.Female: {
-      return female ?? generic;
-    }
 
-    case Sex.Male: {
-      return male ?? generic;
-    }
-
-    default: {
-      return (
-        generic ??
-        faker.helpers.arrayElement([female, male]) ??
-        // The last statement should never happen at run time. At this point in time,
-        // the entry will satisfy at least (generic || (female && male)).
-        // TS is not able to infer the type correctly.
-        []
-      );
-    }
+  if (sex === 'generic') {
+    return (
+      generic ??
+      faker.helpers.arrayElement([female, male]) ??
+      // The last statement should never happen at run time. At this point in time,
+      // the entry will satisfy at least (generic || (female && male)).
+      // TS is not able to infer the type correctly.
+      []
+    );
   }
+
+  const binary = sex === 'female' ? female : male;
+
+  if (binary != null) {
+    if (generic != null) {
+      return faker.helpers.weightedArrayElement([
+        {
+          weight: 80,
+          value: binary,
+        },
+        {
+          weight: 20,
+          value: generic,
+        },
+      ]);
+    }
+
+    return binary;
+  }
+
+  return (
+    generic ??
+    // The last statement should never happen at run time. At this point in time,
+    // the entry will satisfy at least (generic || (female && male)).
+    // TS is not able to infer the type correctly.
+    []
+  );
 }
 
 /**
