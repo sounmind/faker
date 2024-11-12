@@ -1,5 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { MersenneTwister19937 } from '../../src/internal/mersenne';
+import { randomSeed } from '../../src/internal/seed';
 import type { Randomizer } from '../../src/randomizer';
 import {
   generateMersenne32Randomizer,
@@ -103,10 +104,6 @@ describe.each([
       expect(actual).toMatchSnapshot();
     });
   });
-
-  function randomSeed(): number {
-    return Math.ceil(Math.random() * 1_000_000_000);
-  }
 
   // Create and log-back the seed for debug purposes
   describe.each(

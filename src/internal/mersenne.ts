@@ -1,5 +1,7 @@
 // Based on: https://github.com/dubzzz/pure-rand/blob/5da623a4eebf47f01c5b87c43c9fb4d43ad949bd/src/generator/MersenneTwister.ts
 
+import { randomSeed } from './seed';
+
 const N = 624;
 const M = 397;
 const R = 31;
@@ -133,7 +135,7 @@ export class MersenneTwister19937 {
    * @param index The index to use, must be a number between 0 and 623.
    */
   constructor(
-    seed: number | number[] = Math.random() * Number.MAX_SAFE_INTEGER,
+    seed: number | number[] = randomSeed(),
     private states: number[] = twist(seedFrom(seed)),
     private index: number = 0
   ) {}
