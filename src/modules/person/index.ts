@@ -281,7 +281,7 @@ export class PersonModule extends ModuleBase {
    * @since 8.0.0
    */
   sexType(): SexType {
-    return this.faker.helpers.enumValue(Sex);
+    return this.faker.helpers.arrayElement([Sex.Female, Sex.Male]);
   }
 
   /**
