@@ -10,7 +10,7 @@ exports[`git > 42 > commitDate > with only string refDate 1`] = `"Tue Dec 31 08:
 
 exports[`git > 42 > commitEntry > with only Date refDate 1`] = `
 "commit ead331ddf0fc4446b96d368ab4bd1d31efb62f92
-Author: Ramiro.Hahn <Ramiro_Hahn92@hotmail.com>
+Author: Laverne.Hahn <Laverne_Hahn92@hotmail.com>
 Date: Tue Dec 31 04:42:12 2019 -1000
 
     copy haptic card
@@ -19,7 +19,7 @@ Date: Tue Dec 31 04:42:12 2019 -1000
 
 exports[`git > 42 > commitEntry > with only number refDate 1`] = `
 "commit ead331ddf0fc4446b96d368ab4bd1d31efb62f92
-Author: Ramiro.Hahn <Ramiro_Hahn92@hotmail.com>
+Author: Laverne.Hahn <Laverne_Hahn92@hotmail.com>
 Date: Tue Dec 31 04:42:12 2019 -1000
 
     copy haptic card
@@ -28,7 +28,7 @@ Date: Tue Dec 31 04:42:12 2019 -1000
 
 exports[`git > 42 > commitEntry > with only string refDate 1`] = `
 "commit ead331ddf0fc4446b96d368ab4bd1d31efb62f92
-Author: Ramiro.Hahn <Ramiro_Hahn92@hotmail.com>
+Author: Laverne.Hahn <Laverne_Hahn92@hotmail.com>
 Date: Tue Dec 31 04:42:12 2019 -1000
 
     copy haptic card
@@ -96,28 +96,28 @@ exports[`git > 1337 > commitDate > with only string refDate 1`] = `"Tue Dec 31 0
 
 exports[`git > 1337 > commitEntry > with only Date refDate 1`] = `
 "commit 36a7b5fa28d2f9bb79ca46ea394bc4f9bb0af328
-Author: Abdul.Schamberger <Abdul_Schamberger25@yahoo.com>
-Date: Tue Dec 31 02:08:13 2019 +1100
+Author: Vernon_Heller <Vernon.Heller1@hotmail.com>
+Date: Tue Dec 31 22:32:07 2019 +1200
 
-    transmit multi-byte driver
+    index haptic pixel
 "
 `;
 
 exports[`git > 1337 > commitEntry > with only number refDate 1`] = `
 "commit 36a7b5fa28d2f9bb79ca46ea394bc4f9bb0af328
-Author: Abdul.Schamberger <Abdul_Schamberger25@yahoo.com>
-Date: Tue Dec 31 02:08:13 2019 +1100
+Author: Vernon_Heller <Vernon.Heller1@hotmail.com>
+Date: Tue Dec 31 22:32:07 2019 +1200
 
-    transmit multi-byte driver
+    index haptic pixel
 "
 `;
 
 exports[`git > 1337 > commitEntry > with only string refDate 1`] = `
 "commit 36a7b5fa28d2f9bb79ca46ea394bc4f9bb0af328
-Author: Abdul.Schamberger <Abdul_Schamberger25@yahoo.com>
-Date: Tue Dec 31 02:08:13 2019 +1100
+Author: Vernon_Heller <Vernon.Heller1@hotmail.com>
+Date: Tue Dec 31 22:32:07 2019 +1200
 
-    transmit multi-byte driver
+    index haptic pixel
 "
 `;
 

@@ -32,15 +32,15 @@ exports[`internet > 42 > domainSuffix 1`] = `"info"`;
 
 exports[`internet > 42 > domainWord 1`] = `"hospitable-unit"`;
 
-exports[`internet > 42 > email > noArgs 1`] = `"Moses.Crist@yahoo.com"`;
+exports[`internet > 42 > email > noArgs 1`] = `"Wade60@yahoo.com"`;
 
 exports[`internet > 42 > email > with all options 1`] = `"Jane.Doe@fakerjs.dev"`;
 
-exports[`internet > 42 > email > with allowSpecialCharacters option 1`] = `"Moses.Crist@yahoo.com"`;
+exports[`internet > 42 > email > with allowSpecialCharacters option 1`] = `"Wade60@yahoo.com"`;
 
 exports[`internet > 42 > email > with firstName option 1`] = `"Jane.Miller15@yahoo.com"`;
 
-exports[`internet > 42 > email > with lastName option 1`] = `"Moses_Doe15@yahoo.com"`;
+exports[`internet > 42 > email > with lastName option 1`] = `"Wade.Doe15@yahoo.com"`;
 
 exports[`internet > 42 > email > with provider option 1`] = `"Moses.Crist@fakerjs.dev"`;
 
@@ -48,15 +48,15 @@ exports[`internet > 42 > emoji > noArgs 1`] = `"🌾"`;
 
 exports[`internet > 42 > emoji > with options 1`] = `"🦔"`;
 
-exports[`internet > 42 > exampleEmail > noArgs 1`] = `"Moses.Crist@example.com"`;
+exports[`internet > 42 > exampleEmail > noArgs 1`] = `"Wade60@example.com"`;
 
 exports[`internet > 42 > exampleEmail > with all options 1`] = `"Jane_Doe@example.com"`;
 
-exports[`internet > 42 > exampleEmail > with allowSpecialCharacters option 1`] = `"Moses.Crist@example.com"`;
+exports[`internet > 42 > exampleEmail > with allowSpecialCharacters option 1`] = `"Wade60@example.com"`;
 
 exports[`internet > 42 > exampleEmail > with firstName option 1`] = `"Jane.Miller15@example.com"`;
 
-exports[`internet > 42 > exampleEmail > with lastName option 1`] = `"Moses_Doe15@example.com"`;
+exports[`internet > 42 > exampleEmail > with lastName option 1`] = `"Wade.Doe15@example.com"`;
 
 exports[`internet > 42 > httpMethod 1`] = `"POST"`;
 
@@ -154,7 +154,7 @@ exports[`internet > 1211 > color > with greenBase option 1`] = `"#77a41c"`;
 
 exports[`internet > 1211 > color > with redBase option 1`] = `"#a9721c"`;
 
-exports[`internet > 1211 > displayName > noArgs 1`] = `"Skye_Osinski-Paucek35"`;
+exports[`internet > 1211 > displayName > noArgs 1`] = `"Dangelo_Paucek35"`;
 
 exports[`internet > 1211 > displayName > with Chinese names 1`] = `"大羽89"`;
 
@@ -168,7 +168,7 @@ exports[`internet > 1211 > displayName > with all option 1`] = `"Jane89"`;
 
 exports[`internet > 1211 > displayName > with firstName option 1`] = `"Jane_Fahey67"`;
 
-exports[`internet > 1211 > displayName > with lastName option 1`] = `"Skye.Doe99"`;
+exports[`internet > 1211 > displayName > with lastName option 1`] = `"Dangelo_Doe67"`;
 
 exports[`internet > 1211 > domainName 1`] = `"velvety-tarragon.biz"`;
 
@@ -176,31 +176,31 @@ exports[`internet > 1211 > domainSuffix 1`] = `"org"`;
 
 exports[`internet > 1211 > domainWord 1`] = `"velvety-tarragon"`;
 
-exports[`internet > 1211 > email > noArgs 1`] = `"Dangelo35@hotmail.com"`;
+exports[`internet > 1211 > email > noArgs 1`] = `"Jerald69@hotmail.com"`;
 
 exports[`internet > 1211 > email > with all options 1`] = `"Jane_Doe89@fakerjs.dev"`;
 
-exports[`internet > 1211 > email > with allowSpecialCharacters option 1`] = `"Dangelo35@hotmail.com"`;
+exports[`internet > 1211 > email > with allowSpecialCharacters option 1`] = `"Jerald69@hotmail.com"`;
 
 exports[`internet > 1211 > email > with firstName option 1`] = `"Jane68@hotmail.com"`;
 
-exports[`internet > 1211 > email > with lastName option 1`] = `"Dangelo_Doe@hotmail.com"`;
+exports[`internet > 1211 > email > with lastName option 1`] = `"Jerald_Doe@hotmail.com"`;
 
-exports[`internet > 1211 > email > with provider option 1`] = `"Skye35@fakerjs.dev"`;
+exports[`internet > 1211 > email > with provider option 1`] = `"Dangelo35@fakerjs.dev"`;
 
 exports[`internet > 1211 > emoji > noArgs 1`] = `"🇹🇳"`;
 
 exports[`internet > 1211 > emoji > with options 1`] = `"🌲"`;
 
-exports[`internet > 1211 > exampleEmail > noArgs 1`] = `"Dangelo35@example.net"`;
+exports[`internet > 1211 > exampleEmail > noArgs 1`] = `"Jerald69@example.net"`;
 
 exports[`internet > 1211 > exampleEmail > with all options 1`] = `"Jane_Doe@example.net"`;
 
-exports[`internet > 1211 > exampleEmail > with allowSpecialCharacters option 1`] = `"Dangelo35@example.net"`;
+exports[`internet > 1211 > exampleEmail > with allowSpecialCharacters option 1`] = `"Jerald69@example.net"`;
 
 exports[`internet > 1211 > exampleEmail > with firstName option 1`] = `"Jane68@example.net"`;
 
-exports[`internet > 1211 > exampleEmail > with lastName option 1`] = `"Dangelo_Doe@example.net"`;
+exports[`internet > 1211 > exampleEmail > with lastName option 1`] = `"Jerald_Doe@example.net"`;
 
 exports[`internet > 1211 > httpMethod 1`] = `"PATCH"`;
 
@@ -256,7 +256,7 @@ exports[`internet > 1211 > url > without slash appended and with http protocol 1
 
 exports[`internet > 1211 > userAgent 1`] = `"Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko"`;
 
-exports[`internet > 1211 > userName > noArgs 1`] = `"Skye35"`;
+exports[`internet > 1211 > userName > noArgs 1`] = `"Dangelo35"`;
 
 exports[`internet > 1211 > userName > with Chinese names 1`] = `"hlzp8d_tpv89"`;
 
@@ -270,9 +270,9 @@ exports[`internet > 1211 > userName > with all option 1`] = `"Jane_Doe89"`;
 
 exports[`internet > 1211 > userName > with firstName option 1`] = `"Jane67"`;
 
-exports[`internet > 1211 > userName > with lastName option 1`] = `"Skye.Doe"`;
+exports[`internet > 1211 > userName > with lastName option 1`] = `"Dangelo_Doe"`;
 
-exports[`internet > 1211 > username > noArgs 1`] = `"Skye35"`;
+exports[`internet > 1211 > username > noArgs 1`] = `"Dangelo35"`;
 
 exports[`internet > 1211 > username > with Chinese names 1`] = `"hlzp8d_tpv89"`;
 
@@ -286,7 +286,7 @@ exports[`internet > 1211 > username > with all option 1`] = `"Jane_Doe89"`;
 
 exports[`internet > 1211 > username > with firstName option 1`] = `"Jane67"`;
 
-exports[`internet > 1211 > username > with lastName option 1`] = `"Skye.Doe"`;
+exports[`internet > 1211 > username > with lastName option 1`] = `"Dangelo_Doe"`;
 
 exports[`internet > 1337 > color > noArgs 1`] = `"#211423"`;
 

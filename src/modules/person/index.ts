@@ -36,7 +36,7 @@ export type SexType = `${Sex}`;
  */
 function selectDefinition<T>(
   faker: Faker,
-  sex: SexType = faker.helpers.enumValue(Sex),
+  sex: SexType = faker.person.sexType(),
   personEntry: PersonEntryDefinition<T>
 ): T[] {
   const { generic, female, male } = personEntry;
