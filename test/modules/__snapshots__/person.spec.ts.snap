@@ -42,7 +42,11 @@ exports[`person > 42 > sex > noArgs 1`] = `"female"`;
 
 exports[`person > 42 > sex > with sex 1`] = `"female"`;
 
-exports[`person > 42 > sexType 1`] = `"female"`;
+exports[`person > 42 > sexType > noArgs 1`] = `"female"`;
+
+exports[`person > 42 > sexType > with includeGeneric=false 1`] = `"female"`;
+
+exports[`person > 42 > sexType > with includeGeneric=true 1`] = `"male"`;
 
 exports[`person > 42 > suffix > noArgs 1`] = `"III"`;
 
@@ -92,7 +96,11 @@ exports[`person > 1211 > sex > noArgs 1`] = `"male"`;
 
 exports[`person > 1211 > sex > with sex 1`] = `"male"`;
 
-exports[`person > 1211 > sexType 1`] = `"male"`;
+exports[`person > 1211 > sexType > noArgs 1`] = `"male"`;
+
+exports[`person > 1211 > sexType > with includeGeneric=false 1`] = `"male"`;
+
+exports[`person > 1211 > sexType > with includeGeneric=true 1`] = `"generic"`;
 
 exports[`person > 1211 > suffix > noArgs 1`] = `"DVM"`;
 
@@ -142,7 +150,11 @@ exports[`person > 1337 > sex > noArgs 1`] = `"female"`;
 
 exports[`person > 1337 > sex > with sex 1`] = `"female"`;
 
-exports[`person > 1337 > sexType 1`] = `"female"`;
+exports[`person > 1337 > sexType > noArgs 1`] = `"female"`;
+
+exports[`person > 1337 > sexType > with includeGeneric=false 1`] = `"female"`;
+
+exports[`person > 1337 > sexType > with includeGeneric=true 1`] = `"female"`;
 
 exports[`person > 1337 > suffix > noArgs 1`] = `"I"`;
 

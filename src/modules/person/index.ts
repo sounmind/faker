@@ -11,13 +11,13 @@ export enum Sex {
    */
   Female = 'female',
   /**
-   * Is used for values that are primarily attributable to only males.
-   */
-  Male = 'male',
-  /**
    * Is used for values that cannot clearly be attributed to a specific sex or are used for both sexes.
    */
   Generic = 'generic',
+  /**
+   * Is used for values that are primarily attributable to only males.
+   */
+  Male = 'male',
 }
 
 /**
@@ -272,15 +272,37 @@ export class PersonModule extends ModuleBase {
   /**
    * Returns a random sex type. The `SexType` is intended to be used in parameters and conditions.
    *
+   * @param options The optional options object.
+   * @param options.includeGeneric Whether `'generic'` should be included in the potential outputs.
+   * If `false`, this method only returns `'female'` and `'male'`.
+   * Default is `false`.
+   *
    * @see faker.person.gender(): For generating a gender related value in forms.
    * @see faker.person.sex(): For generating a binary-gender value in forms.
    *
    * @example
    * faker.person.sexType() // Sex.Female
+   * faker.person.sexType({ includeGeneric: true }) // Sex.Generic
    *
    * @since 8.0.0
    */
-  sexType(): SexType {
+  sexType(
+    options: {
+      /**
+       * Whether `'generic'` should be included in the potential outputs.
+       * If `false`, this method only returns `'female'` and `'male'`.
+       *
+       * @default false
+       */
+      includeGeneric?: boolean;
+    } = {}
+  ): SexType {
+    const { includeGeneric = false } = options;
+
+    if (includeGeneric) {
+      return this.faker.helpers.enumValue(Sex);
+    }
+
     return this.faker.helpers.arrayElement([Sex.Female, Sex.Male]);
   }
 

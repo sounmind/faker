@@ -8,13 +8,19 @@ const NON_SEEDED_BASED_RUN = 5;
 describe('person', () => {
   seededTests(faker, 'person', (t) => {
     t.itEach(
-      'sexType',
       'gender',
       'jobTitle',
       'jobDescriptor',
       'jobArea',
       'jobType',
       'bio'
+    );
+
+    t.describe('sexType', (t) =>
+      t
+        .it('noArgs')
+        .it('with includeGeneric=true', { includeGeneric: true })
+        .it('with includeGeneric=false', { includeGeneric: false })
     );
 
     t.describeEach(
@@ -249,8 +255,22 @@ describe('person', () => {
       });
 
       describe('sexType()', () => {
-        it('should return a sex type', () => {
+        it('should return a sex type without generic by default', () => {
           const sexType = faker.person.sexType();
+
+          expect(sexType).toBeTypeOf('string');
+          expect([Sex.Female, Sex.Male]).toContain(sexType);
+        });
+
+        it('should return a sex type explicitly without generic', () => {
+          const sexType = faker.person.sexType({ includeGeneric: false });
+
+          expect(sexType).toBeTypeOf('string');
+          expect([Sex.Female, Sex.Male]).toContain(sexType);
+        });
+
+        it('should return a sex type including generic', () => {
+          const sexType = faker.person.sexType({ includeGeneric: true });
 
           expect(sexType).toBeTypeOf('string');
           expect(Object.values(Sex)).toContain(sexType);
