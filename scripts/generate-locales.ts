@@ -23,6 +23,9 @@ import type { LocaleDefinition, MetadataDefinition } from '../src/definitions';
 import { keys } from '../src/internal/keys';
 import { formatMarkdown, formatTypescript } from './apidocs/utils/format';
 
+console.log('| locale | entry | female | generic | male |');
+console.log('| --- | --- | --- | --- | --- |');
+
 // Constants
 
 const pathRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -328,11 +331,13 @@ async function updateLocaleFileHook(
   }
 
   if (definitionKey === 'person' && entryName != null) {
-    console.log(`Updating person entry: ${entryName} for locale: ${locale}`);
     const { default: data } = (await import(`file:${filePath}`)) as {
       default: PersonEntryDefinition<string>;
     };
     const { female = [], generic = [], male = [] } = data ?? {};
+    const femaleCount = female.length,
+      genericCount = generic.length,
+      maleCount = male.length;
 
     // Revert merging of female and male => generic
     for (let i = generic.length; i >= 0; --i) {
@@ -367,6 +372,25 @@ async function updateLocaleFileHook(
     const newContent = `export default ${JSON.stringify(newData)};`;
 
     if (female.length > 0 || generic.length > 0 || male.length > 0) {
+      console.log(
+        '|',
+        locale,
+        '|',
+        entryName,
+        '|',
+        femaleCount,
+        '=>',
+        female.length,
+        '|',
+        genericCount,
+        '=>',
+        generic.length,
+        '|',
+        maleCount,
+        '=>',
+        male.length,
+        '|'
+      );
       await writeFile(filePath, await formatTypescript(newContent));
     }
   }
@@ -428,7 +452,7 @@ async function normalizeLocaleFile(filePath: string, definitionKey: string) {
     return;
   }
 
-  console.log(`Running data normalization for:`, filePath);
+  // console.log(`Running data normalization for:`, filePath);
 
   const fileContent = await readFile(filePath, { encoding: 'utf8' });
   const searchString = 'export default ';
