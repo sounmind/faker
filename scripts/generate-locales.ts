@@ -18,6 +18,7 @@ import { constants } from 'node:fs';
 import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { PersonEntryDefinition } from '../dist';
 import type { LocaleDefinition, MetadataDefinition } from '../src/definitions';
 import { keys } from '../src/internal/keys';
 import { formatMarkdown, formatTypescript } from './apidocs/utils/format';
@@ -324,6 +325,50 @@ async function updateLocaleFileHook(
   // this needs to stay so all arguments are "used"
   if (filePath === 'never') {
     console.log(`${filePath} <-> ${locale} @ ${definitionKey} -> ${entryName}`);
+  }
+
+  if (definitionKey === 'person' && entryName != null) {
+    console.log(`Updating person entry: ${entryName} for locale: ${locale}`);
+    const { default: data } = (await import(`file:${filePath}`)) as {
+      default: PersonEntryDefinition<string>;
+    };
+    const { female = [], generic = [], male = [] } = data ?? {};
+
+    // Revert merging of female and male => generic
+    for (let i = generic.length; i >= 0; --i) {
+      if (female.includes(generic[i]) !== male.includes(generic[i])) {
+        generic.splice(i, 1);
+      }
+    }
+
+    // Remove generic entries from females and detect new generic entries
+    for (let i = female.length; i >= 0; --i) {
+      if (generic.includes(female[i])) {
+        female.splice(i, 1);
+      } else if (male.includes(female[i])) {
+        generic.push(female[i]);
+        female.splice(i, 1);
+      }
+    }
+
+    // Remove generic entries from males
+    for (let i = male.length; i >= 0; --i) {
+      if (generic.includes(male[i])) {
+        male.splice(i, 1);
+      }
+    }
+
+    const newData = {
+      generic: generic.length > 0 ? generic.sort() : undefined,
+      female: female.length > 0 ? female.sort() : undefined,
+      male: male.length > 0 ? male.sort() : undefined,
+    };
+
+    const newContent = `export default ${JSON.stringify(newData)};`;
+
+    if (female.length > 0 || generic.length > 0 || male.length > 0) {
+      await writeFile(filePath, await formatTypescript(newContent));
+    }
   }
 
   return normalizeLocaleFile(filePath, definitionKey);
