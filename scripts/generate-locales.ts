@@ -24,7 +24,7 @@ import { keys } from '../src/internal/keys';
 import { formatMarkdown, formatTypescript } from './apidocs/utils/format';
 
 console.log('| locale | entry | female | generic | male |');
-console.log('| --- | --- | --- | --- | --- |');
+console.log('| :----: | :---: | :----: | :-----: | :--: |');
 
 // Constants
 
