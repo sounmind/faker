@@ -6,6 +6,10 @@ import type { LocaleEntry } from './definitions';
 export type PersonEntryDefinition<T> =
   | {
       /**
+       * Values that are primarily attributable to only males.
+       */
+      female: T[];
+      /**
        * Values that cannot clearly be attributed to a specific sex or are used for both sexes.
        */
       generic?: T[];
@@ -13,18 +17,14 @@ export type PersonEntryDefinition<T> =
        * Values that are primarily attributable to only females.
        */
       male: T[];
-      /**
-       * Values that are primarily attributable to only males.
-       */
-      female: T[];
     }
   | {
+      female?: never;
       /**
        * Values that cannot clearly be attributed to a specific sex or are used both sexes.
        */
       generic: T[];
       male?: never;
-      female?: never;
     };
 
 type SimplePersonEntryDefinition = PersonEntryDefinition<string>;
