@@ -379,15 +379,15 @@ async function updateLocaleFileHook(
         entryName,
         '|',
         femaleCount,
-        '=>',
+        '➡',
         female.length,
         '|',
         genericCount,
-        '=>',
+        '➡',
         generic.length,
         '|',
         maleCount,
-        '=>',
+        '➡',
         male.length,
         '|'
       );
