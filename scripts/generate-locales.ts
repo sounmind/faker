@@ -18,7 +18,6 @@ import { constants } from 'node:fs';
 import { access, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { PersonEntryDefinition } from '../dist';
 import type { LocaleDefinition, MetadataDefinition } from '../src/definitions';
 import { keys } from '../src/internal/keys';
 import { formatMarkdown, formatTypescript } from './apidocs/utils/format';
@@ -325,25 +324,6 @@ async function updateLocaleFileHook(
   // this needs to stay so all arguments are "used"
   if (filePath === 'never') {
     console.log(`${filePath} <-> ${locale} @ ${definitionKey} -> ${entryName}`);
-  }
-
-  if (definitionKey === 'person' && entryName != null) {
-    const { default: data } = (await import(`file:${filePath}`)) as {
-      default: PersonEntryDefinition<string>;
-    };
-    const { female = [], generic = [], male = [] } = data ?? {};
-
-    const newData = {
-      generic: generic.length > 0 ? [...new Set(generic)].sort() : undefined,
-      female: female.length > 0 ? [...new Set(female)].sort() : undefined,
-      male: male.length > 0 ? [...new Set(male)].sort() : undefined,
-    };
-
-    const newContent = `export default ${JSON.stringify(newData)};`;
-
-    if (female.length > 0 || generic.length > 0 || male.length > 0) {
-      await writeFile(filePath, await formatTypescript(newContent));
-    }
   }
 
   return normalizeLocaleFile(filePath, definitionKey);
