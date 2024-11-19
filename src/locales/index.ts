@@ -213,4 +213,4 @@ export const allLocales = {
   zh_CN,
   zh_TW,
   zu_ZA,
-};
+} as const;

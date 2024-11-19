@@ -509,7 +509,9 @@ let localesIndexContent = `
 
   ${localesIndexExportsIndividual}
 
-  export const allLocales = { ${localesIndexExportsGrouped} };
+  export const allLocales = {
+  ${localesIndexExportsGrouped}
+  } as const;
   `;
 
 localesIndexContent = await formatTypescript(localesIndexContent);
