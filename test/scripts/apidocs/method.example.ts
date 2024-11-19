@@ -9,6 +9,8 @@ export type {
   NumberColorFormat,
   StringColorFormat,
 } from '../../../src';
+export type { LiteralUnion } from '../../../src/internal/types';
+export type { AlphaNumericChar } from '../../../src/modules/string';
 
 /**
  * Parameter options type with default from signature.
@@ -471,6 +473,3 @@ export class SignatureTest {
     return array[0].value;
   }
 }
-
-export { type LiteralUnion } from '../../../src/internal/types';
-export { type AlphaNumericChar } from '../../../src/modules/string';
