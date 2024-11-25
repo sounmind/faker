@@ -1,9 +1,17 @@
-import validator from 'validator';
+import { isHexadecimal, isOctal } from 'validator';
 import { describe, expect, it, vi } from 'vitest';
 import { FakerError, SimpleFaker, faker } from '../../src';
 import { seededTests } from '../support/seeded-runs';
 import { MERSENNE_MAX_VALUE } from '../utils/mersenne-test-utils';
 import { times } from './../support/times';
+
+function isFloat(value: number): boolean {
+  return value % 1 !== 0;
+}
+
+function isBinary(str: string): boolean {
+  return [...str].every((char) => char === '0' || char === '1');
+}
 
 describe('number', () => {
   seededTests(faker, 'number', (t) => {
@@ -259,10 +267,6 @@ describe('number', () => {
     });
 
     describe('float', () => {
-      function isFloat(value: number) {
-        return value % 1 !== 0;
-      }
-
       it('should return a float between 0 and 1 (inclusive) by default', () => {
         const actual = faker.number.float();
 
@@ -405,10 +409,6 @@ describe('number', () => {
     });
 
     describe('binary', () => {
-      function isBinary(str: string) {
-        return [...str].every((char) => char === '0' || char === '1');
-      }
-
       it('generates single binary character when no additional argument was provided', () => {
         const binary = faker.number.binary();
 
@@ -464,7 +464,7 @@ describe('number', () => {
         const octal = faker.number.octal();
 
         expect(octal).toBeTypeOf('string');
-        expect(octal).toSatisfy(validator.isOctal);
+        expect(octal).toSatisfy(isOctal);
 
         expect(octal).toHaveLength(1);
       });
@@ -473,7 +473,7 @@ describe('number', () => {
         const octal = faker.number.octal(5);
 
         expect(octal).toBeTypeOf('string');
-        expect(octal).toSatisfy(validator.isOctal);
+        expect(octal).toSatisfy(isOctal);
 
         const octalNum = Number.parseInt(octal, 8);
         expect(octalNum).toBeLessThanOrEqual(5);
@@ -483,7 +483,7 @@ describe('number', () => {
         const octal = faker.number.octal({ min: 15, max: 255 });
 
         expect(octal).toBeTypeOf('string');
-        expect(octal).toSatisfy(validator.isOctal);
+        expect(octal).toSatisfy(isOctal);
 
         const octalNum = Number.parseInt(octal, 8);
         expect(octalNum).toBeLessThanOrEqual(255);
@@ -515,7 +515,7 @@ describe('number', () => {
         const hex = faker.number.hex();
 
         expect(hex).toBeTypeOf('string');
-        expect(hex).toSatisfy(validator.isHexadecimal);
+        expect(hex).toSatisfy(isHexadecimal);
 
         expect(hex).toHaveLength(1);
       });
@@ -524,14 +524,14 @@ describe('number', () => {
         const hex = faker.number.hex(5);
 
         expect(hex).toBeTypeOf('string');
-        expect(hex).toSatisfy(validator.isHexadecimal);
+        expect(hex).toSatisfy(isHexadecimal);
       });
 
       it('generates a random hex in a specific range', () => {
         const hex = faker.number.hex({ min: 15, max: 255 });
 
         expect(hex).toBeTypeOf('string');
-        expect(hex).toSatisfy(validator.isHexadecimal);
+        expect(hex).toSatisfy(isHexadecimal);
 
         const hexNum = Number.parseInt(hex, 16);
         expect(hexNum).toBeLessThanOrEqual(255);
